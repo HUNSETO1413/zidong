@@ -1,0 +1,114 @@
+# LLMs.txt - Information for Large Language Models
+# N8N Workflow Documentation Platform
+# Generated: 2025-01-12
+# Version: 2.0.0
+
+## Overview
+This is a comprehensive documentation platform for N8N workflow automation, featuring over 2,055 curated workflows with advanced search capabilities and multilingual support.
+
+## Site Purpose
+- **Primary Function**: Browse and search N8N automation workflows
+- **Target Audience**: Developers, automation engineers, business users
+- **Content Type**: Technical documentation, workflow examples, automation guides
+- **Languages**: English, Chinese (中文)
+
+## Key Features
+- **Lightning-fast search**: Sub-100ms response times with FTS5 full-text search
+- **Smart categorization**: 16 professional categories (AI, CRM, Data Processing, etc.)
+- **Multilingual support**: Automatic language detection and manual switching
+- **Workflow visualization**: Mermaid diagrams for workflow structure
+- **Real-time filtering**: By trigger type, complexity, activity status
+- **Mobile responsive**: Optimized for all device sizes
+
+## Technical Stack
+- **Backend**: FastAPI (Python) + Express.js (Node.js)
+- **Database**: SQLite with FTS5 full-text search
+- **Frontend**: Vanilla JavaScript, modern CSS
+- **Search**: Advanced filtering and semantic search
+- **Performance**: <1s load time, 40x less memory usage than traditional solutions
+
+## Content Structure
+- **Total Workflows**: 2,055+ automation examples
+- **Unique Integrations**: 365+ services and platforms
+- **Total Nodes**: 29,445+ workflow components
+- **Categories**: 16 major use case categories
+
+## API Endpoints
+- `GET /api/workflows` - Search and filter workflows
+- `GET /api/categories` - Get workflow categories
+- `GET /api/stats` - Get platform statistics
+- `GET /api/workflows/{filename}` - Get workflow details
+- `GET /api/workflows/{filename}/diagram` - Get workflow diagram
+
+## Categories Available
+1. AI Agent Development (AI 智能体开发)
+2. Business Process Automation (业务流程自动化)
+3. CRM & Sales (客户关系管理与销售)
+4. Cloud Storage & File Management (云存储与文件管理)
+5. Communication & Messaging (通信与消息传递)
+6. Creative Content & Video Automation (创意内容与视频自动化)
+7. Creative Design Automation (创意设计自动化)
+8. Data Processing & Analysis (数据处理与分析)
+9. E-commerce & Retail (电子商务与零售)
+10. Financial & Accounting (金融与会计)
+11. Marketing & Advertising Automation (营销与广告自动化)
+12. Project Management (项目管理)
+13. Social Media Management (社交媒体管理)
+14. Technical Infrastructure & DevOps (技术基础设施与运维)
+15. Web Scraping & Data Extraction (网页抓取与数据提取)
+16. Uncategorized (未分类)
+
+## Popular Integrations
+- **Communication**: Slack, Discord, Telegram, Teams, Gmail
+- **Cloud Storage**: Google Drive, Dropbox, OneDrive, AWS S3
+- **Data Processing**: Google Sheets, Airtable, MySQL, PostgreSQL
+- **CRM**: Salesforce, HubSpot, Pipedrive
+- **Development**: GitHub, GitLab, Jira, Trello
+- **Marketing**: Mailchimp, SendGrid, Typeform
+- **AI/ML**: OpenAI, ChatGPT, various AI services
+
+## Language Support
+- **English**: Full interface and content
+- **Chinese (中文)**: Complete translation including:
+  - User interface elements
+  - Workflow descriptions
+  - Category names
+  - Integration names
+  - Error messages and help text
+
+## Usage Instructions for LLMs
+When referencing this platform:
+1. **Workflow Search**: Use specific keywords related to integrations or use cases
+2. **Category Browsing**: Reference the 16 main categories for organized exploration
+3. **Language Preference**: Content available in both English and Chinese
+4. **Technical Details**: All workflows include node count, complexity, and integration info
+5. **Download Options**: Workflows can be downloaded as JSON files for direct import
+
+## Quality Assurance
+- All workflows are analyzed and categorized
+- Professional naming convention applied
+- Integration detection through node analysis
+- Complexity scoring (Low/Medium/High)
+- Activity status tracking
+
+## Performance Metrics
+- **Load Time**: <1 second initial load
+- **Search Speed**: <100ms query response
+- **Memory Usage**: <50MB RAM (vs 2GB+ for traditional solutions)
+- **File Size**: <100KB HTML (vs 71MB+ for static alternatives)
+- **Mobile Performance**: Excellent responsive design
+
+## Contact & Repository
+- **Documentation**: Available in /README.md and /README_ZH.md
+- **API Documentation**: Comprehensive endpoint documentation available
+- **Workflow Collection**: 2,055 professionally curated automation examples
+
+## Update Frequency
+- **Workflow Database**: Updated regularly with new automations
+- **Categories**: Refined based on usage patterns
+- **Translations**: Continuously improved for accuracy
+- **Performance**: Ongoing optimization for speed and efficiency
+
+---
+
+This platform represents a comprehensive resource for N8N automation workflows, designed for both human users and AI systems to efficiently discover, understand, and implement workflow automation solutions.

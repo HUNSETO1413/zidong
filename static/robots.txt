@@ -1,0 +1,40 @@
+# Robots.txt for N8N Workflow Documentation
+# Generated on 2025-01-12
+
+User-agent: *
+
+# Allow crawling of main pages
+Allow: /
+Allow: /?lang=en
+Allow: /?lang=zh
+Allow: /static/
+Allow: /api/workflows
+Allow: /api/categories
+Allow: /api/stats
+
+# Disallow crawling of sensitive or unnecessary paths
+Disallow: /api/workflows/*/download
+Disallow: /database/
+Disallow: /workflows/
+Disallow: /__pycache__/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /context/
+Disallow: /Documentation/
+
+# Allow specific documentation files
+Allow: /README.md
+Allow: /README_ZH.md
+
+# Crawl delay to be respectful to server resources
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: http://localhost:8017/static/sitemap.xml
+
+# Additional information for AI crawlers
+# This site contains N8N workflow documentation and automation examples
+# Content is available in both English and Chinese (中文)
+# Total workflows: 2055+
+# Categories: 16 major workflow categories
+# Features: Real-time search, category filtering, workflow visualization

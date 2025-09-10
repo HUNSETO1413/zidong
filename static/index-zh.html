@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ N8N 工作流文档</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+  <style>
+    /* Modern CSS Reset and Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --bg: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #475569;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: all 0.2s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .stat-number {
+      display: block;
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Controls */
+    .controls {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .search-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      min-width: 300px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+    }
+
+    .filter-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .filter-group select {
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+
+    .theme-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: auto;
+    }
+
+    .lang-toggle {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-left: 0.5rem;
+      transition: all 0.2s ease;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .lang-toggle:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .results-info {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Main Content */
+    .main {
+      padding: 2rem 0;
+    }
+
+    /* States */
+    .state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .state .icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .state p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .retry-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .retry-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Workflow Grid */
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .workflow-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .workflow-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .workflow-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .workflow-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .status-active {
+      background: var(--success);
+    }
+
+    .status-inactive {
+      background: var(--text-muted);
+    }
+
+    .complexity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .complexity-low {
+      background: var(--success);
+    }
+
+    .complexity-medium {
+      background: var(--warning);
+    }
+
+    .complexity-high {
+      background: var(--error);
+    }
+
+    .trigger-badge {
+      background: var(--primary);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .category-badge {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .workflow-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .workflow-description {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .workflow-integrations {
+      margin-top: 1rem;
+    }
+
+    .integrations-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .integrations-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .integration-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.125rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+    }
+
+    .workflow-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .action-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      background: var(--bg);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--primary);
+    }
+
+    .action-btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Load More */
+    .load-more {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .load-more-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .load-more-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--bg);
+      border-radius: 0.75rem;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: var(--text-secondary);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .workflow-detail {
+      margin-bottom: 1rem;
+    }
+
+    .workflow-detail h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+    }
+
+    .copy-btn.copied:hover {
+      background: var(--success);
+    }
+
+    .json-viewer {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      max-height: 400px;
+      white-space: pre-wrap;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Mermaid diagram styling */
+    .mermaid {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .title {
+        font-size: 2rem;
+      }
+
+      .stats {
+        gap: 1rem;
+      }
+
+      .search-section,
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-input {
+        min-width: auto;
+      }
+
+      .theme-toggle {
+        margin-left: 0;
+        align-self: flex-start;
+      }
+
+      .workflow-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workflow-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <h1 class="title">⚡ N8N 工作流文档</h1>
+        <p class="subtitle">闪电般快速的工作流浏览器，支持即时搜索</p>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-number" id="totalCount">0</span>
+            <span class="stat-label">总计</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="activeCount">0</span>
+            <span class="stat-label">活跃</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="nodeCount">0</span>
+            <span class="stat-label">总节点数</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" id="integrationCount">0</span>
+            <span class="stat-label">集成</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="container">
+        <div class="search-section">
+          <input type="text" id="searchInput" class="search-input"
+            placeholder="按名称、描述或集成搜索工作流...">
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-group">
+            <label for="triggerFilter">触发器：</label>
+            <select id="triggerFilter">
+              <option value="all">所有类型</option>
+              <option value="Webhook">Webhook</option>
+              <option value="Scheduled">定时</option>
+              <option value="Manual">手动</option>
+              <option value="Complex">复杂</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="complexityFilter">复杂度：</label>
+            <select id="complexityFilter">
+              <option value="all">所有级别</option>
+              <option value="low">低 (≤5 节点)</option>
+              <option value="medium">中 (6-15 节点)</option>
+              <option value="high">高 (16+ 节点)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="categoryFilter">分类：</label>
+            <select id="categoryFilter">
+              <option value="all">所有分类</option>
+              <!-- Categories will be populated dynamically -->
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>
+              <input type="checkbox" id="activeOnly">
+              仅活跃
+            </label>
+          </div>
+
+          <button id="themeToggle" class="theme-toggle">🌙</button>
+          <button id="langToggle" class="lang-toggle">EN</button>
+        </div>
+
+        <div class="results-info">
+          <span id="resultsCount">加载中...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="container">
+        <!-- Loading State -->
+        <div id="loadingState" class="state loading">
+          <div class="icon">⚡</div>
+          <h3>正在加载工作流...</h3>
+          <p>请稍候，我们正在获取您的工作流数据</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="state error hidden">
+          <div class="icon">❌</div>
+          <h3>加载工作流时出错</h3>
+          <p id="errorMessage">出现错误，请重试。</p>
+          <button id="retryBtn" class="retry-btn">重试</button>
+        </div>
+
+        <!-- No Results State -->
+        <div id="noResultsState" class="state hidden">
+          <div class="icon">🔍</div>
+          <h3>未找到工作流</h3>
+          <p>尝试调整您的搜索词或筛选条件</p>
+        </div>
+
+        <!-- Workflows Grid -->
+        <div id="workflowGrid" class="workflow-grid hidden">
+          <!-- Workflow cards will be inserted here -->
+        </div>
+
+        <!-- Load More -->
+        <div id="loadMoreContainer" class="load-more hidden">
+          <button id="loadMoreBtn" class="load-more-btn">加载更多</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Workflow Detail Modal -->
+    <div id="workflowModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">工作流详情</h2>
+          <button class="modal-close" id="modalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="workflow-detail">
+            <h4>描述</h4>
+            <p id="modalDescription">加载中...</p>
+          </div>
+
+          <div class="workflow-detail">
+            <h4>统计信息</h4>
+            <div id="modalStats">加载中...</div>
+          </div>
+
+          <div class="workflow-detail">
+            <h4>集成</h4>
+            <div id="modalIntegrations">加载中...</div>
+          </div>
+
+          <div class="workflow-detail">
+            <h4>操作</h4>
+            <div class="workflow-actions">
+              <a id="downloadBtn" class="action-btn primary" href="#" download>📥 下载 JSON</a>
+              <button id="viewJsonBtn" class="action-btn">📄 查看 JSON</button>
+              <button id="viewDiagramBtn" class="action-btn">📊 查看图表</button>
+            </div>
+          </div>
+
+          <div class="workflow-detail hidden" id="jsonSection">
+            <div class="section-header">
+              <h4>工作流 JSON</h4>
+              <button id="copyJsonBtn" class="copy-btn" title="复制 JSON 到剪贴板">
+                📋 复制
+              </button>
+            </div>
+            <div class="json-viewer" id="jsonViewer">加载中...</div>
+          </div>
+
+          <div class="workflow-detail hidden" id="diagramSection">
+            <div class="section-header">
+              <h4>工作流图表</h4>
+              <button id="copyDiagramBtn" class="copy-btn" title="复制图表代码到剪贴板">
+                📋 复制
+              </button>
+            </div>
+            <div id="diagramViewer">正在加载图表...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced Workflow App with Full Functionality - 中文版
+    class WorkflowApp {
+      constructor() {
+        this.state = {
+          workflows: [],
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: 0,
+          perPage: 20,
+          isLoading: false,
+          searchQuery: '',
+          filters: {
+            trigger: 'all',
+            complexity: 'all',
+            category: 'all',
+            activeOnly: false
+          },
+          categories: [],
+          categoryMap: new Map(),
+          categoryTranslations: new Map() // 中文名称到英文名称的映射
+        };
+
+        this.elements = {
+          searchInput: document.getElementById('searchInput'),
+          triggerFilter: document.getElementById('triggerFilter'),
+          complexityFilter: document.getElementById('complexityFilter'),
+          categoryFilter: document.getElementById('categoryFilter'),
+          activeOnlyFilter: document.getElementById('activeOnly'),
+          themeToggle: document.getElementById('themeToggle'),
+          langToggle: document.getElementById('langToggle'),
+          resultsCount: document.getElementById('resultsCount'),
+          workflowGrid: document.getElementById('workflowGrid'),
+          loadMoreContainer: document.getElementById('loadMoreContainer'),
+          loadMoreBtn: document.getElementById('loadMoreBtn'),
+          loadingState: document.getElementById('loadingState'),
+          errorState: document.getElementById('errorState'),
+          noResultsState: document.getElementById('noResultsState'),
+          errorMessage: document.getElementById('errorMessage'),
+          retryBtn: document.getElementById('retryBtn'),
+          totalCount: document.getElementById('totalCount'),
+          activeCount: document.getElementById('activeCount'),
+          nodeCount: document.getElementById('nodeCount'),
+          integrationCount: document.getElementById('integrationCount'),
+          // Modal elements
+          workflowModal: document.getElementById('workflowModal'),
+          modalTitle: document.getElementById('modalTitle'),
+          modalClose: document.getElementById('modalClose'),
+          modalDescription: document.getElementById('modalDescription'),
+          modalStats: document.getElementById('modalStats'),
+          modalIntegrations: document.getElementById('modalIntegrations'),
+          downloadBtn: document.getElementById('downloadBtn'),
+          viewJsonBtn: document.getElementById('viewJsonBtn'),
+          viewDiagramBtn: document.getElementById('viewDiagramBtn'),
+          jsonSection: document.getElementById('jsonSection'),
+          jsonViewer: document.getElementById('jsonViewer'),
+          diagramSection: document.getElementById('diagramSection'),
+          diagramViewer: document.getElementById('diagramViewer'),
+          copyJsonBtn: document.getElementById('copyJsonBtn'),
+          copyDiagramBtn: document.getElementById('copyDiagramBtn')
+        };
+
+        this.searchDebounceTimer = null;
+        this.currentWorkflow = null;
+        this.currentJsonData = null;
+        this.currentDiagramData = null;
+        this.init();
+      }
+
+      async init() {
+        this.setupEventListeners();
+        this.setupTheme();
+        this.initMermaid();
+        await this.loadInitialData();
+      }
+
+      initMermaid() {
+        // Initialize Mermaid with proper configuration
+        if (typeof mermaid !== 'undefined') {
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            themeVariables: {
+              primaryColor: '#3b82f6',
+              primaryTextColor: '#1e293b',
+              primaryBorderColor: '#2563eb',
+              lineColor: '#64748b',
+              secondaryColor: '#f1f5f9',
+              tertiaryColor: '#f8fafc'
+            }
+          });
+        }
+      }
+
+      setupEventListeners() {
+        // Search and filters
+        this.elements.searchInput.addEventListener('input', (e) => {
+          this.state.searchQuery = e.target.value;
+          this.debounceSearch();
+        });
+
+        this.elements.triggerFilter.addEventListener('change', (e) => {
+          this.state.filters.trigger = e.target.value;
+          this.state.currentPage = 1;
+          this.resetAndSearch();
+        });
+
+        this.elements.complexityFilter.addEventListener('change', (e) => {
+          this.state.filters.complexity = e.target.value;
+          this.state.currentPage = 1;
+          this.resetAndSearch();
+        });
+
+        this.elements.categoryFilter.addEventListener('change', (e) => {
+          const selectedCategoryZh = e.target.value;
+          console.log(`分类筛选已更改为: ${selectedCategoryZh}`);
+          console.log('当前分类映射大小:', this.state.categoryMap.size);
+          
+          // 将中文分类名转换为英文进行筛选
+          let selectedCategoryEn = selectedCategoryZh;
+          if (selectedCategoryZh !== 'all') {
+            selectedCategoryEn = this.state.categoryTranslations.get(selectedCategoryZh) || selectedCategoryZh;
+          }
+          
+          this.state.filters.category = selectedCategoryEn;
+          this.state.currentPage = 1;
+          this.resetAndSearch();
+        });
+
+        this.elements.activeOnlyFilter.addEventListener('change', (e) => {
+          this.state.filters.activeOnly = e.target.checked;
+          this.state.currentPage = 1;
+          this.resetAndSearch();
+        });
+
+        // Load more
+        this.elements.loadMoreBtn.addEventListener('click', () => {
+          this.loadMoreWorkflows();
+        });
+
+        // Retry
+        this.elements.retryBtn.addEventListener('click', () => {
+          this.loadInitialData();
+        });
+
+        // Theme toggle
+        this.elements.themeToggle.addEventListener('click', () => {
+          this.toggleTheme();
+        });
+
+        // Language toggle
+        this.elements.langToggle.addEventListener('click', () => {
+          this.toggleLanguage();
+        });
+
+        // Modal events
+        this.elements.modalClose.addEventListener('click', () => {
+          this.closeModal();
+        });
+
+        this.elements.workflowModal.addEventListener('click', (e) => {
+          if (e.target === this.elements.workflowModal) {
+            this.closeModal();
+          }
+        });
+
+        this.elements.viewJsonBtn.addEventListener('click', () => {
+          this.toggleJsonView();
+        });
+
+        this.elements.viewDiagramBtn.addEventListener('click', () => {
+          this.toggleDiagramView();
+        });
+
+        // Copy button events
+        this.elements.copyJsonBtn.addEventListener('click', () => {
+          this.copyToClipboard(this.currentJsonData, 'copyJsonBtn');
+        });
+
+        this.elements.copyDiagramBtn.addEventListener('click', () => {
+          this.copyToClipboard(this.currentDiagramData, 'copyDiagramBtn');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            this.closeModal();
+          }
+        });
+      }
+
+      setupTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        this.updateThemeToggle(savedTheme);
+      }
+
+      toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        this.updateThemeToggle(newTheme);
+      }
+
+      updateThemeToggle(theme) {
+        this.elements.themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+
+      toggleLanguage() {
+        // 切换到英文版本
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('lang', 'en');
+        window.location.href = currentUrl.toString();
+      }
+
+      debounceSearch() {
+        clearTimeout(this.searchDebounceTimer);
+        this.searchDebounceTimer = setTimeout(() => {
+          this.state.currentPage = 1;
+          this.resetAndSearch();
+        }, 300);
+      }
+
+      async apiCall(endpoint, options = {}) {
+        const response = await fetch(`/api${endpoint}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          },
+          ...options
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async loadInitialData() {
+        this.showState('loading');
+
+        try {
+          // Load categories first, then stats and workflows
+          console.log('正在加载分类...');
+          await this.loadCategories();
+          
+          console.log('分类已加载，正在填充筛选器...');
+          this.populateCategoryFilter();
+          
+          // Load stats and workflows in parallel
+          console.log('正在加载统计信息和工作流...');
+          const [stats] = await Promise.all([
+            this.apiCall('/stats'),
+            this.loadWorkflows(true)
+          ]);
+
+          this.updateStatsDisplay(stats);
+          console.log('初始数据加载完成');
+        } catch (error) {
+          console.error('初始数据加载过程中出错:', error);
+          this.showError('加载数据失败: ' + error.message);
+        }
+      }
+
+      async loadCategories() {
+        try {
+          console.log('正在从 API 加载分类...');
+          
+          // Load categories and mappings in parallel from API
+          const [categoriesResponseZh, categoriesResponseEn, mappingsResponse] = await Promise.all([
+            this.apiCall('/categories?lang=zh'),
+            this.apiCall('/categories?lang=en'),
+            this.apiCall('/category-mappings')
+          ]);
+          
+          // Set categories from API
+          this.state.categories = categoriesResponseZh.categories || ['未分类'];
+          
+          // Build translation mapping (中文 -> 英文)
+          const enCategories = categoriesResponseEn.categories || ['Uncategorized'];
+          const zhCategories = categoriesResponseZh.categories || ['未分类'];
+          
+          this.state.categoryTranslations.clear();
+          for (let i = 0; i < Math.min(enCategories.length, zhCategories.length); i++) {
+            this.state.categoryTranslations.set(zhCategories[i], enCategories[i]);
+          }
+          
+          // Build category map from API mappings
+          const categoryMap = new Map();
+          const mappings = mappingsResponse.mappings || {};
+          
+          Object.entries(mappings).forEach(([filename, category]) => {
+            categoryMap.set(filename, category || '未分类');
+          });
+          
+          this.state.categoryMap = categoryMap;
+          
+          console.log(`成功从 API 加载 ${this.state.categories.length} 个分类:`, this.state.categories);
+          console.log(`从 API 加载了 ${categoryMap.size} 个分类映射`);
+          
+          return { categories: this.state.categories, mappings: mappings };
+        } catch (error) {
+          console.error('从 API 加载分类失败:', error);
+          // Set default categories if loading fails
+          this.state.categories = ['未分类'];
+          this.state.categoryMap = new Map();
+          return { categories: this.state.categories, mappings: {} };
+        }
+      }
+
+      populateCategoryFilter() {
+        const select = this.elements.categoryFilter;
+        
+        if (!select) {
+          console.error('未找到分类筛选器元素');
+          return;
+        }
+        
+        console.log('正在填充分类筛选器:', this.state.categories);
+        
+        // Clear existing options except "所有分类"
+        while (select.children.length > 1) {
+          select.removeChild(select.lastChild);
+        }
+        
+        if (this.state.categories.length === 0) {
+          console.warn('没有可用分类来填充筛选器');
+          return;
+        }
+        
+        // Add categories in alphabetical order
+        this.state.categories.forEach(category => {
+          const option = document.createElement('option');
+          option.value = category;
+          option.textContent = category;
+          select.appendChild(option);
+          console.log(`已添加分类选项: ${category}`);
+        });
+        
+        console.log(`分类筛选器已填充 ${select.options.length - 1} 个分类`);
+      }
+
+      async loadWorkflows(reset = false) {
+        if (reset) {
+          this.state.currentPage = 1;
+          this.state.workflows = [];
+        }
+
+        this.state.isLoading = true;
+
+        try {
+          // If category filtering is active, we need to load all workflows to filter properly
+          const needsAllWorkflows = this.state.filters.category !== 'all' && reset;
+          
+          let allWorkflows = [];
+          let totalCount = 0;
+          let totalPages = 1;
+          
+          if (needsAllWorkflows) {
+            // Load all workflows in batches for category filtering
+            console.log('正在为分类筛选加载所有工作流...');
+            allWorkflows = await this.loadAllWorkflowsForCategoryFiltering();
+            
+            // Apply client-side category filtering
+            console.log(`正在筛选 ${allWorkflows.length} 个工作流，分类: ${this.state.filters.category}`);
+            console.log('分类映射大小:', this.state.categoryMap.size);
+            
+            let matchCount = 0;
+            const filteredWorkflows = allWorkflows.filter(workflow => {
+              const workflowCategory = this.getWorkflowCategory(workflow.filename);
+              const matches = workflowCategory === this.state.filters.category;
+              
+              // Debug: log first few matches/non-matches
+              if (matchCount < 5 || (!matches && matchCount < 3)) {
+                console.log(`${workflow.filename}: ${workflowCategory} ${matches ? '===' : '!=='} ${this.state.filters.category}`);
+              }
+              
+              if (matches) matchCount++;
+              
+              return matches;
+            });
+            
+            console.log(`从 ${allWorkflows.length} 筛选到 ${filteredWorkflows.length} 个工作流`);
+            allWorkflows = filteredWorkflows;
+            totalCount = filteredWorkflows.length;
+            totalPages = 1; // All results loaded, no pagination needed
+          } else {
+            // Normal pagination
+            const params = new URLSearchParams({
+              q: this.state.searchQuery,
+              trigger: this.state.filters.trigger,
+              complexity: this.state.filters.complexity,
+              active_only: this.state.filters.activeOnly,
+              page: this.state.currentPage,
+              per_page: this.state.perPage,
+              lang: 'zh'
+            });
+
+            const response = await this.apiCall(`/workflows?${params}`);
+            allWorkflows = response.workflows;
+            totalCount = response.total;
+            totalPages = response.pages;
+          }
+
+          if (reset) {
+            this.state.workflows = allWorkflows;
+            this.state.totalCount = totalCount;
+            this.state.totalPages = totalPages;
+          } else {
+            this.state.workflows.push(...allWorkflows);
+          }
+
+          this.updateUI();
+
+        } catch (error) {
+          this.showError('加载工作流失败: ' + error.message);
+        } finally {
+          this.state.isLoading = false;
+        }
+      }
+
+      async loadAllWorkflowsForCategoryFiltering() {
+        const allWorkflows = [];
+        let currentPage = 1;
+        const maxPerPage = 100; // API limit
+        
+        while (true) {
+            const params = new URLSearchParams({
+              q: this.state.searchQuery,
+              trigger: this.state.filters.trigger,
+              complexity: this.state.filters.complexity,
+              active_only: this.state.filters.activeOnly,
+              page: currentPage,
+              per_page: maxPerPage,
+              lang: 'zh'
+            });
+
+          const response = await this.apiCall(`/workflows?${params}`);
+          allWorkflows.push(...response.workflows);
+          
+          console.log(`已加载第 ${currentPage}/${response.pages} 页 (${response.workflows.length} 个工作流)`);
+          
+          if (currentPage >= response.pages) {
+            break;
+          }
+          
+          currentPage++;
+        }
+        
+        console.log(`共加载了 ${allWorkflows.length} 个工作流用于筛选`);
+        return allWorkflows;
+      }
+
+      getWorkflowCategory(filename) {
+        const category = this.state.categoryMap.get(filename);
+        const result = category && category.trim() ? category : '未分类';
+        return result;
+      }
+
+      async loadMoreWorkflows() {
+        if (this.state.currentPage >= this.state.totalPages) return;
+
+        this.state.currentPage++;
+        await this.loadWorkflows(false);
+      }
+
+      resetAndSearch() {
+        this.loadWorkflows(true);
+      }
+
+      updateUI() {
+        this.updateResultsCount();
+        this.renderWorkflows();
+        this.updateLoadMoreButton();
+
+        if (this.state.workflows.length === 0) {
+          this.showState('no-results');
+        } else {
+          this.showState('content');
+        }
+      }
+
+      updateStatsDisplay(stats) {
+        this.elements.totalCount.textContent = stats.total.toLocaleString();
+        this.elements.activeCount.textContent = stats.active.toLocaleString();
+        this.elements.nodeCount.textContent = stats.total_nodes.toLocaleString();
+        this.elements.integrationCount.textContent = stats.unique_integrations.toLocaleString();
+      }
+
+      updateResultsCount() {
+        const count = this.state.totalCount;
+        const query = this.state.searchQuery;
+        const category = this.state.filters.category;
+        
+        let text = `${count.toLocaleString()} 个工作流`;
+        
+        if (query && category !== 'all') {
+          text += ` 在 "${category}" 中找到 "${query}"`;
+        } else if (query) {
+          text += ` 找到 "${query}"`;
+        } else if (category !== 'all') {
+          text += ` 在 "${category}" 中`;
+        }
+        
+        this.elements.resultsCount.textContent = text;
+      }
+
+      renderWorkflows() {
+        const html = this.state.workflows.map(workflow => this.createWorkflowCard(workflow)).join('');
+        this.elements.workflowGrid.innerHTML = html;
+
+        // Add click handlers to cards
+        this.elements.workflowGrid.querySelectorAll('.workflow-card').forEach((card, index) => {
+          card.addEventListener('click', () => {
+            this.openWorkflowDetail(this.state.workflows[index]);
+          });
+        });
+      }
+
+      createWorkflowCard(workflow) {
+        const statusClass = workflow.active ? 'status-active' : 'status-inactive';
+        const complexityClass = `complexity-${workflow.complexity}`;
+        const category = this.getWorkflowCategory(workflow.filename);
+
+        const integrations = workflow.integrations.slice(0, 5).map(integration =>
+          `<span class="integration-tag">${this.escapeHtml(integration)}</span>`
+        ).join('');
+
+        const moreIntegrations = workflow.integrations.length > 5
+          ? `<span class="integration-tag">+${workflow.integrations.length - 5}</span>`
+          : '';
+
+        // 中文化触发器类型
+        const triggerTypeMap = {
+          'Webhook': 'Webhook',
+          'Scheduled': '定时',
+          'Manual': '手动',
+          'Complex': '复杂'
+        };
+        const triggerText = triggerTypeMap[workflow.trigger_type] || workflow.trigger_type;
+
+        return `
+                    <div class="workflow-card" data-filename="${workflow.filename}">
+                        <div class="workflow-header">
+                            <div class="workflow-meta">
+                                <div class="status-dot ${statusClass}"></div>
+                                <div class="complexity-dot ${complexityClass}"></div>
+                                <span>${workflow.node_count} 个节点</span>
+                                <span class="category-badge">${this.escapeHtml(category)}</span>
+                            </div>
+                            <span class="trigger-badge">${this.escapeHtml(triggerText)}</span>
+                        </div>
+                        
+                        <h3 class="workflow-title">${this.escapeHtml(workflow.name)}</h3>
+                        <p class="workflow-description">${this.escapeHtml(workflow.description)}</p>
+                        
+                        ${workflow.integrations.length > 0 ? `
+                            <div class="workflow-integrations">
+                                <h4 class="integrations-title">集成 (${workflow.integrations.length})</h4>
+                                <div class="integrations-list">
+                                    ${integrations}
+                                    ${moreIntegrations}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+      }
+
+      async openWorkflowDetail(workflow) {
+        this.currentWorkflow = workflow;
+        this.elements.modalTitle.textContent = workflow.name;
+        this.elements.modalDescription.textContent = workflow.description;
+
+        // Update stats
+        const category = this.getWorkflowCategory(workflow.filename);
+        const statusText = workflow.active ? '活跃' : '非活跃';
+        
+        // 中文化复杂度
+        const complexityMap = {
+          'low': '低',
+          'medium': '中',
+          'high': '高'
+        };
+        const complexityText = complexityMap[workflow.complexity] || workflow.complexity;
+        
+        // 中文化触发器类型
+        const triggerTypeMap = {
+          'Webhook': 'Webhook',
+          'Scheduled': '定时',
+          'Manual': '手动',
+          'Complex': '复杂'
+        };
+        const triggerText = triggerTypeMap[workflow.trigger_type] || workflow.trigger_type;
+
+        this.elements.modalStats.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div><strong>状态：</strong> ${statusText}</div>
+                        <div><strong>触发器：</strong> ${triggerText}</div>
+                        <div><strong>复杂度：</strong> ${complexityText}</div>
+                        <div><strong>节点：</strong> ${workflow.node_count}</div>
+                        <div><strong>分类：</strong> ${this.escapeHtml(category)}</div>
+                    </div>
+                `;
+
+        // Update integrations
+        if (workflow.integrations.length > 0) {
+          this.elements.modalIntegrations.innerHTML = workflow.integrations
+            .map(integration => `<span class="integration-tag">${this.escapeHtml(integration)}</span>`)
+            .join(' ');
+        } else {
+          this.elements.modalIntegrations.textContent = '未找到集成';
+        }
+
+        // Set download link
+        this.elements.downloadBtn.href = `/api/workflows/${workflow.filename}/download`;
+        this.elements.downloadBtn.download = workflow.filename;
+
+        // Reset view states
+        this.elements.jsonSection.classList.add('hidden');
+        this.elements.diagramSection.classList.add('hidden');
+
+        this.elements.workflowModal.classList.remove('hidden');
+      }
+
+      closeModal() {
+        this.elements.workflowModal.classList.add('hidden');
+        this.currentWorkflow = null;
+        this.currentJsonData = null;
+        this.currentDiagramData = null;
+
+        // Reset button states
+        this.elements.viewJsonBtn.textContent = '📄 查看 JSON';
+        this.elements.viewDiagramBtn.textContent = '📊 查看图表';
+
+        // Reset copy button states
+        this.resetCopyButton('copyJsonBtn');
+        this.resetCopyButton('copyDiagramBtn');
+      }
+
+      async toggleJsonView() {
+        if (!this.currentWorkflow) return;
+
+        const isVisible = !this.elements.jsonSection.classList.contains('hidden');
+
+        if (isVisible) {
+          this.elements.jsonSection.classList.add('hidden');
+          this.elements.viewJsonBtn.textContent = '📄 查看 JSON';
+        } else {
+          try {
+            this.elements.jsonViewer.textContent = '加载中...';
+            this.elements.jsonSection.classList.remove('hidden');
+            this.elements.viewJsonBtn.textContent = '📄 隐藏 JSON';
+
+            const data = await this.apiCall(`/workflows/${this.currentWorkflow.filename}`);
+            const jsonString = JSON.stringify(data.raw_json, null, 2);
+            this.currentJsonData = jsonString;
+            this.elements.jsonViewer.textContent = jsonString;
+          } catch (error) {
+            this.elements.jsonViewer.textContent = '加载 JSON 时出错: ' + error.message;
+            this.currentJsonData = null;
+          }
+        }
+      }
+
+      async toggleDiagramView() {
+        if (!this.currentWorkflow) return;
+
+        const isVisible = !this.elements.diagramSection.classList.contains('hidden');
+
+        if (isVisible) {
+          this.elements.diagramSection.classList.add('hidden');
+          this.elements.viewDiagramBtn.textContent = '📊 查看图表';
+        } else {
+          try {
+            this.elements.diagramViewer.textContent = '正在加载图表...';
+            this.elements.diagramSection.classList.remove('hidden');
+            this.elements.viewDiagramBtn.textContent = '📊 隐藏图表';
+
+            const data = await this.apiCall(`/workflows/${this.currentWorkflow.filename}/diagram`);
+            this.currentDiagramData = data.diagram;
+
+            // Create a Mermaid diagram that will be rendered
+            this.elements.diagramViewer.innerHTML = `
+                            <pre class="mermaid">${data.diagram}</pre>
+                        `;
+
+            // Re-initialize Mermaid for the new diagram
+            if (typeof mermaid !== 'undefined') {
+              mermaid.init(undefined, this.elements.diagramViewer.querySelector('.mermaid'));
+            }
+          } catch (error) {
+            this.elements.diagramViewer.textContent = '加载图表时出错: ' + error.message;
+            this.currentDiagramData = null;
+          }
+        }
+      }
+
+      updateLoadMoreButton() {
+        const hasMore = this.state.currentPage < this.state.totalPages;
+
+        if (hasMore && this.state.workflows.length > 0) {
+          this.elements.loadMoreContainer.classList.remove('hidden');
+        } else {
+          this.elements.loadMoreContainer.classList.add('hidden');
+        }
+      }
+
+      showState(state) {
+        // Hide all states
+        this.elements.loadingState.classList.add('hidden');
+        this.elements.errorState.classList.add('hidden');
+        this.elements.noResultsState.classList.add('hidden');
+        this.elements.workflowGrid.classList.add('hidden');
+
+        // Show the requested state
+        switch (state) {
+          case 'loading':
+            this.elements.loadingState.classList.remove('hidden');
+            break;
+          case 'error':
+            this.elements.errorState.classList.remove('hidden');
+            break;
+          case 'no-results':
+            this.elements.noResultsState.classList.remove('hidden');
+            break;
+          case 'content':
+            this.elements.workflowGrid.classList.remove('hidden');
+            break;
+        }
+      }
+
+      showError(message) {
+        this.elements.errorMessage.textContent = message;
+        this.showState('error');
+      }
+
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      async copyToClipboard(text, buttonId) {
+        if (!text) {
+          console.warn('没有内容可复制');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          this.showCopySuccess(buttonId);
+        } catch (error) {
+          // Fallback for older browsers
+          this.fallbackCopyToClipboard(text, buttonId);
+        }
+      }
+
+      fallbackCopyToClipboard(text, buttonId) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          document.execCommand('copy');
+          this.showCopySuccess(buttonId);
+        } catch (error) {
+          console.error('复制文本失败: ', error);
+        } finally {
+          document.body.removeChild(textArea);
+        }
+      }
+
+      showCopySuccess(buttonId) {
+        const button = document.getElementById(buttonId);
+        if (!button) return;
+
+        const originalText = button.innerHTML;
+        button.innerHTML = '✅ 已复制!';
+        button.classList.add('copied');
+
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      }
+
+      resetCopyButton(buttonId) {
+        const button = document.getElementById(buttonId);
+        if (!button) return;
+
+        button.innerHTML = '📋 复制';
+        button.classList.remove('copied');
+      }
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', () => {
+      window.workflowApp = new WorkflowApp();
+    });
+  </script>
+</body>
+
+</html>
