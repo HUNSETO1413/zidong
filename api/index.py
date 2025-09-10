@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
 Vercel-optimized FastAPI Server for N8N Workflow Documentation
-Simplified version for serverless deployment.
+Ultra-simplified version for serverless deployment.
 """
 
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import json
 import os
@@ -27,22 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Pydantic models
-class StatsResponse(BaseModel):
-    total: int = 2055
-    active: int = 1847
-    total_nodes: int = 29445
-    unique_integrations: int = 365
-
-class SearchResponse(BaseModel):
-    workflows: List[Dict[str, Any]]
-    total: int
-    page: int
-    per_page: int
-    pages: int
-    query: str
-    filters: Dict[str, Any]
 
 # Mock data for Vercel deployment
 MOCK_CATEGORIES = [
@@ -122,12 +105,13 @@ async def root(request: Request, lang: Optional[str] = Query(None)):
         response.set_cookie(key="lang", value=chosen_lang, httponly=True, max_age=3600 * 24 * 30)
         return response
     except FileNotFoundError:
-        return HTMLResponse("""
+        return HTMLResponse(f"""
         <html><body>
         <h1>N8N Workflow Documentation</h1>
         <p>Welcome to the N8N Workflow Documentation platform.</p>
         <p>This is a serverless deployment on Vercel.</p>
-        <p>Language: """ + chosen_lang + """</p>
+        <p>Language: {chosen_lang}</p>
+        <p>Static files not found, serving basic content.</p>
         </body></html>
         """)
 
@@ -135,7 +119,12 @@ async def root(request: Request, lang: Optional[str] = Query(None)):
 @app.get("/api/stats")
 async def get_stats():
     """Get workflow statistics."""
-    return StatsResponse()
+    return {
+        "total": 2055,
+        "active": 1847,
+        "total_nodes": 29445,
+        "unique_integrations": 365
+    }
 
 @app.get("/api/categories")
 async def get_categories(lang: str = Query("en")):
@@ -209,19 +198,19 @@ async def search_workflows(
     end = start + per_page
     page_workflows = workflows[start:end]
     
-    return SearchResponse(
-        workflows=page_workflows,
-        total=total,
-        page=page,
-        per_page=per_page,
-        pages=total_pages,
-        query=q,
-        filters={
+    return {
+        "workflows": page_workflows,
+        "total": total,
+        "page": page,
+        "per_page": per_page,
+        "pages": total_pages,
+        "query": q,
+        "filters": {
             "trigger": trigger,
             "complexity": complexity,
             "active_only": active_only
         }
-    )
+    }
 
 # SEO files
 @app.get("/sitemap.xml")

@@ -4,40 +4,18 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
-    {
-      "src": "/sitemap.xml",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/robots.txt", 
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/llms.txt",
-      "dest": "/api/index.py"
-    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.py"
     },
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/static/$1"
     }
   ],
-  "env": {
-    "PYTHONPATH": "."
-  },
   "outputDirectory": "static"
 }
