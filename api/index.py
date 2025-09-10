@@ -5,60 +5,12 @@ Simplified version for serverless deployment.
 """
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 import json
 import os
-import re
-from pathlib import Path
-
-# Translation system for Vercel
-class WorkflowTranslator:
-    def __init__(self):
-        self.translations = self.load_translations()
-    
-    def load_translations(self):
-        """Load translation mappings."""
-        translations = {
-            "zh": {
-                "categories": {
-                    "AI Agent Development": "AI 智能体开发",
-                    "Business Process Automation": "业务流程自动化",
-                    "CRM & Sales": "客户关系管理与销售",
-                    "Cloud Storage & File Management": "云存储与文件管理",
-                    "Communication & Messaging": "通信与消息传递",
-                    "Creative Content & Video Automation": "创意内容与视频自动化",
-                    "Creative Design Automation": "创意设计自动化",
-                    "Data Processing & Analysis": "数据处理与分析",
-                    "E-commerce & Retail": "电子商务与零售",
-                    "Financial & Accounting": "金融与会计",
-                    "Marketing & Advertising Automation": "营销与广告自动化",
-                    "Project Management": "项目管理",
-                    "Social Media Management": "社交媒体管理",
-                    "Technical Infrastructure & DevOps": "技术基础设施与运维",
-                    "Uncategorized": "未分类",
-                    "Web Scraping & Data Extraction": "网页抓取与数据提取"
-                },
-                "trigger_descriptions": {
-                    "Webhook-triggered automation that": "Webhook触发的自动化流程，",
-                    "Scheduled automation that": "定时自动化流程，",
-                    "Complex multi-step automation that": "复杂的多步骤自动化流程，",
-                    "Manual workflow that": "手动工作流，"
-                }
-            }
-        }
-        return translations
-    
-    def translate_category_name(self, category: str, lang: str = 'en') -> str:
-        if lang == 'en' or lang not in self.translations:
-            return category
-        return self.translations[lang].get('categories', {}).get(category, category)
-
-# Initialize translator
-translator = WorkflowTranslator()
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -175,6 +127,7 @@ async def root(request: Request, lang: Optional[str] = Query(None)):
         <h1>N8N Workflow Documentation</h1>
         <p>Welcome to the N8N Workflow Documentation platform.</p>
         <p>This is a serverless deployment on Vercel.</p>
+        <p>Language: """ + chosen_lang + """</p>
         </body></html>
         """)
 
@@ -190,11 +143,26 @@ async def get_categories(lang: str = Query("en")):
     categories = MOCK_CATEGORIES.copy()
     
     if lang == "zh":
-        translated_categories = []
-        for category in categories:
-            translated_category = translator.translate_category_name(category, lang)
-            translated_categories.append(translated_category)
-        categories = translated_categories
+        # Simple translation mapping
+        translations = {
+            "AI Agent Development": "AI 智能体开发",
+            "Business Process Automation": "业务流程自动化",
+            "CRM & Sales": "客户关系管理与销售",
+            "Cloud Storage & File Management": "云存储与文件管理",
+            "Communication & Messaging": "通信与消息传递",
+            "Creative Content & Video Automation": "创意内容与视频自动化",
+            "Creative Design Automation": "创意设计自动化",
+            "Data Processing & Analysis": "数据处理与分析",
+            "E-commerce & Retail": "电子商务与零售",
+            "Financial & Accounting": "金融与会计",
+            "Marketing & Advertising Automation": "营销与广告自动化",
+            "Project Management": "项目管理",
+            "Social Media Management": "社交媒体管理",
+            "Technical Infrastructure & DevOps": "技术基础设施与运维",
+            "Uncategorized": "未分类",
+            "Web Scraping & Data Extraction": "网页抓取与数据提取"
+        }
+        categories = [translations.get(cat, cat) for cat in categories]
     
     return {"categories": categories}
 
@@ -286,5 +254,7 @@ async def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "message": "N8N Workflow API is running on Vercel"}
 
-# For Vercel
-handler = app
+# For Vercel - this is the entry point
+def handler(request):
+    """Vercel serverless function handler."""
+    return app(request)
