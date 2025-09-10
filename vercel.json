@@ -3,7 +3,7 @@
   "name": "n8n-workflows-docs",
   "builds": [
     {
-      "src": "api_server.py",
+      "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "50mb"
@@ -13,19 +13,19 @@
   "routes": [
     {
       "src": "/sitemap.xml",
-      "dest": "/api_server.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/robots.txt", 
-      "dest": "/api_server.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/llms.txt",
-      "dest": "/api_server.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api_server.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/static/(.*)",
@@ -33,14 +33,9 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/api_server.py"
+      "dest": "/api/index.py"
     }
   ],
-  "functions": {
-    "api_server.py": {
-      "maxDuration": 30
-    }
-  },
   "env": {
     "PYTHONPATH": "."
   },
