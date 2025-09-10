@@ -241,7 +241,7 @@ async def get_llms():
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "message": "N8N Workflow API is running on Vercel"}
+    return {"status": "healthy", "message": "N8N Workflow API is running on Vercel", "version": "2.0.1"}
 
 # For Vercel - this is the entry point
 def handler(request):
