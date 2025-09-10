@@ -13,6 +13,22 @@
       "dest": "/api/index.py"
     },
     {
+      "src": "/sitemap.xml",
+      "dest": "/static/sitemap.xml"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/static/robots.txt"
+    },
+    {
+      "src": "/llms.txt",
+      "dest": "/static/llms.txt"
+    },
+    {
+      "src": "/",
+      "dest": "/static/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/static/$1"
     }
